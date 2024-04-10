@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheMäklers", "TheMäklers\TheMäklers.csproj", "{52AD11D3-901C-404A-892D-6A0FEF443F7F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheMäklersAPI", "TheMäklers\TheMäklersAPI.csproj", "{52AD11D3-901C-404A-892D-6A0FEF443F7F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheMäklersBlazor", "TheMäklersBlazor\TheMäklersBlazor.csproj", "{A7B6B8EC-0A7E-47D9-9EDE-2FF512E70612}"
 EndProject
