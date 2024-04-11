@@ -1,29 +1,33 @@
 ﻿using TheMäklersAPI.Data.Models;
+using TheMäklersAPI.Data.Interfaces;
+using Microsoft.EntityFrameworkCore;
+
+
 
 namespace TheMäklersAPI.Data.Repositories
 {
-    public class HousingRepository : IHousingRepository
+    public class HousingRepository : IHousing
     {
-        private readonly ApplicationDbContext _context;
+        private readonly MäklersContext _context;
 
-        public HousingRepository(ApplicationDbContext context)
+        public HousingRepository(MäklersContext context)
         {
             _context = context;
         }
 
         public async Task<IEnumerable<Housing>> GetHousingsAsync()
         {
-            return await _context.Housings.ToListAsync();
+            return await _context.Housing.ToListAsync();
         }
 
         public async Task<Housing> GetHousingByIdAsync(int id)
         {
-            return await _context.Housings.FindAsync(id);
+            return await _context.Housing.FindAsync(id);
         }
 
         public async Task AddHousingAsync(Housing housing)
         {
-            _context.Housings.Add(housing);
+            _context.Housing.Add(housing);
             await _context.SaveChangesAsync();
         }
 
@@ -35,7 +39,7 @@ namespace TheMäklersAPI.Data.Repositories
 
         public async Task DeleteHousingAsync(Housing housing)
         {
-            _context.Housings.Remove(housing);
+            _context.Housing.Remove(housing);
             await _context.SaveChangesAsync();
         }
     }
