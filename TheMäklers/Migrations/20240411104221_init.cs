@@ -70,7 +70,6 @@ namespace TheMäklersAPI.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Municipality = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     InitialPrice = table.Column<double>(type: "float", nullable: false),
                     LivingArea = table.Column<double>(type: "float", nullable: false),
                     AdditionalArea = table.Column<double>(type: "float", nullable: false),
@@ -81,40 +80,29 @@ namespace TheMäklersAPI.Migrations
                     AnnualOperatingCost = table.Column<double>(type: "float", nullable: false),
                     YearBuilt = table.Column<int>(type: "int", nullable: false),
                     Images = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BrokerId = table.Column<int>(type: "int", nullable: false),
-                    AgencyId = table.Column<int>(type: "int", nullable: false),
-                    MunicipalityId = table.Column<int>(type: "int", nullable: true)
+                    MunicipalityId = table.Column<int>(type: "int", nullable: false),
+                    BrokerId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Housing", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Housing_Agency_AgencyId",
-                        column: x => x.AgencyId,
-                        principalTable: "Agency",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Housing_Broker_BrokerId",
                         column: x => x.BrokerId,
                         principalTable: "Broker",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Housing_Municipality_MunicipalityId",
                         column: x => x.MunicipalityId,
                         principalTable: "Municipality",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Broker_AgencyId",
                 table: "Broker",
-                column: "AgencyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Housing_AgencyId",
-                table: "Housing",
                 column: "AgencyId");
 
             migrationBuilder.CreateIndex(
