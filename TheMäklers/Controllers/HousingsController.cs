@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TheMäklersAPI.Data.Models;
+using TheMäklersAPI.Data.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -9,24 +10,24 @@ namespace TheMäklersAPI.Controllers
     [ApiController]
     public class HousingsController : ControllerBase
     {
-        private readonly IHousingRepository _housingRepository;
+        private readonly IHousing housingRepo;
 
-        public HousingsController(IHousingRepository housingRepository)
+        public HousingsController(IHousing housingRepository)
         {
-            _housingRepository = housingRepository;
+            housingRepo = housingRepository;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Housing>>> GetHousings()
         {
-            var housings = await _housingRepository.GetHousingsAsync();
+            var housings = await housingRepo.GetHousingsAsync();
             return Ok(housings);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Housing>> GetHousing(int id)
         {
-            var housing = await _housingRepository.GetHousingByIdAsync(id);
+            var housing = await housingRepo.GetHousingByIdAsync(id);
             if (housing == null)
             {
                 return NotFound();
@@ -37,7 +38,7 @@ namespace TheMäklersAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Housing>> PostHousing(Housing housing)
         {
-            await _housingRepository.AddHousingAsync(housing);
+            await housingRepo.AddHousingAsync(housing);
             return CreatedAtAction(nameof(GetHousing), new { id = housing.Id }, housing);
         }
 
@@ -49,20 +50,20 @@ namespace TheMäklersAPI.Controllers
                 return BadRequest();
             }
 
-            await _housingRepository.UpdateHousingAsync(housing);
+            await housingRepo.UpdateHousingAsync(housing);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHousing(int id)
         {
-            var existingHousing = await _housingRepository.GetHousingByIdAsync(id);
+            var existingHousing = await housingRepo.GetHousingByIdAsync(id);
             if (existingHousing == null)
             {
                 return NotFound();
             }
 
-            await _housingRepository.DeleteHousingAsync(existingHousing);
+            await housingRepo.DeleteHousingAsync(existingHousing);
             return NoContent();
         }
     }
