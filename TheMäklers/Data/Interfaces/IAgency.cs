@@ -1,0 +1,14 @@
+﻿using TheMäklersAPI.Data.Models;
+
+namespace TheMäklersAPI.Data.Interfaces
+{
+    public interface IAgency
+    {
+        Task<IEnumerable<Agency>> GetAgencyAsync();
+        Task<Agency> GetAgencyByIdAsync(int id);
+        Task<Agency> GetAgencyByNameAsync(string name);
+        Task AddAgencyAsync(Agency agency);
+        Task UpdateAgencyAsync(int id);
+        Task DeleteAgencyAsync(int id);
+    }
+}

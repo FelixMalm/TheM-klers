@@ -7,7 +7,6 @@ using TheMäklersAPI.Data.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 // Add services to the container.
 //Hej 
 builder.Services.AddControllers();
@@ -17,9 +16,6 @@ builder.Services.AddDbContext<MäklersContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("MäklersContext") ?? throw new InvalidOperationException("Connection string 'MäklersContext' not found.")));
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IHousing, HousingRepository>();
-
-
-
 
 var app = builder.Build();
 
