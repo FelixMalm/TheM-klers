@@ -5,7 +5,6 @@
         public int Id { get; set; }
         public string Category { get; set; }
         public string Address { get; set; }
-        public string Municipality { get; set; }
         public double InitialPrice { get; set; }
         public double LivingArea { get; set; }
         public double AdditionalArea { get; set; }
@@ -18,11 +17,13 @@
         public List<string> Images { get; set; }
 
         // Foreign keys
+        public int MunicipalityId { get; set; }
         public int BrokerId { get; set; }
-        public int AgencyId { get; set; }
+        
 
         // Navigation properties
+        public Municipality Municipality { get; set; }
         public Broker Broker { get; set; }
-        public Agency Agency { get; set; }
+        
     }
 }
