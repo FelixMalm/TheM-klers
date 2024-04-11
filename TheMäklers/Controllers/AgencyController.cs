@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using TheMäklersAPI.Data.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using TheMäklersAPI.Data.Interfaces;
+using TheMäklersAPI.Data.Models;
+
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace TheMäklersAPI.Controllers
 {
@@ -15,71 +16,67 @@ namespace TheMäklersAPI.Controllers
             AgencyRepo = AgencyRepository;
         }
 
-        public ActionResult Index()
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Agency>>> Get()
         {
-            return View();
+            var agencies = await AgencyRepo.GetAgencyAsync();
+            return Ok(agencies);
         }
 
-        public ActionResult Details(int id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Agency>> Get(int id)
         {
-            return View();
-        }
-
-        public ActionResult Create()
-        {
-            return View();
+            var agency = await AgencyRepo.GetAgencyByIdAsync(id);
+            if (agency == null)
+            {
+                return NotFound();
+            }
+            return Ok(agency);
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult<Agency>> Post([FromBody] Agency agency)
         {
+            if (agency == null)
+            {
+                return BadRequest();
+            }
+
+            await AgencyRepo.AddAgencyAsync(agency);
+            return CreatedAtAction(nameof(Get), new { id = agency.Id }, agency);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, [FromBody] Agency agency)
+        {
+            if (id != agency.Id)
+            {
+                return BadRequest();
+            }
+
             try
             {
-                return RedirectToAction(nameof(Index));
+                await AgencyRepo.UpdateAgencyAsync(id);
             }
-            catch
+            catch (Exception)
             {
-                return View();
+                return NotFound();
             }
+
+            return NoContent();
         }
 
-        public ActionResult Edit(int id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            return View();
-        }
+            var existingAgency = await AgencyRepo.GetAgencyByIdAsync(id);
+            if (existingAgency == null)
+            {
+                return NotFound();
+            }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            await AgencyRepo.DeleteAgencyAsync(id);
+            return NoContent();
         }
     }
 }

@@ -16,7 +16,6 @@ namespace TheMäklersAPI.Data.Repositories
         {
             return await _context.Agency.ToListAsync();
         }
-
         public async Task<Agency> GetAgencyByIdAsync(int id)
         {
             return await _context.Agency.FindAsync(id);
@@ -37,7 +36,6 @@ namespace TheMäklersAPI.Data.Repositories
             _context.Agency.Remove(agencyToDelete);
             await _context.SaveChangesAsync();
         }
-
         public async Task<Agency> GetAgencyByNameAsync(string name)
         {
             var agency = await _context.Agency.FirstOrDefaultAsync(a => a.Name == name);
