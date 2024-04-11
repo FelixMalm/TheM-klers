@@ -12,7 +12,7 @@ using TheMäklersAPI.Data;
 namespace TheMäklersAPI.Migrations
 {
     [DbContext(typeof(MäklersContext))]
-    [Migration("20240411091839_init")]
+    [Migration("20240411093530_init")]
     partial class init
     {
         /// <inheritdoc />
