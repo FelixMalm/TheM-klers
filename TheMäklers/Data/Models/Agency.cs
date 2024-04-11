@@ -9,6 +9,6 @@
 
         // Navigation properties
         public List<Broker> Brokers { get; set; }
-        public List<Housing> Housings { get; set; }
+        
     }
 }

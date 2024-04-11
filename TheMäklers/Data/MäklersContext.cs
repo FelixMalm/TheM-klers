@@ -16,28 +16,7 @@ namespace TheMäklersAPI.Data
             : base(options)
         {
         }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-            // Configure the relationship between Housing and Broker
-            modelBuilder.Entity<Housing>()
-                .HasOne(h => h.Broker)
-                .WithMany(b => b.Housings)
-                .HasForeignKey(h => h.BrokerId)
-                .OnDelete(DeleteBehavior.Restrict); // Disable cascade delete for this relationship
-
-            // Configure the relationship between Housing and Agency
-            modelBuilder.Entity<Housing>()
-                .HasOne(h => h.Agency)
-                .WithMany(a => a.Housings)
-                .HasForeignKey(h => h.AgencyId)
-                .OnDelete(DeleteBehavior.Cascade); // Allow cascade delete for this relationship
-
-            // Other configurations...
-
-            base.OnModelCreating(modelBuilder);
-        }
+       
 
 
 
