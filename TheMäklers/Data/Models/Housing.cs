@@ -24,6 +24,5 @@
         // Navigation properties
         public Municipality Municipality { get; set; }
         public Broker Broker { get; set; }
-        
     }
 }
