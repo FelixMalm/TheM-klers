@@ -26,6 +26,19 @@ namespace TheMäklersAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Category",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Category", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Municipality",
                 columns: table => new
                 {
@@ -44,12 +57,12 @@ namespace TheMäklersAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AgencyId = table.Column<int>(type: "int", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AgencyId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -68,7 +81,6 @@ namespace TheMäklersAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     InitialPrice = table.Column<double>(type: "float", nullable: false),
                     LivingArea = table.Column<double>(type: "float", nullable: false),
@@ -80,8 +92,9 @@ namespace TheMäklersAPI.Migrations
                     AnnualOperatingCost = table.Column<double>(type: "float", nullable: false),
                     YearBuilt = table.Column<int>(type: "int", nullable: false),
                     Images = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MunicipalityId = table.Column<int>(type: "int", nullable: false),
-                    BrokerId = table.Column<int>(type: "int", nullable: false)
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    BrokerId = table.Column<int>(type: "int", nullable: false),
+                    MunicipalityId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -90,6 +103,12 @@ namespace TheMäklersAPI.Migrations
                         name: "FK_Housing_Broker_BrokerId",
                         column: x => x.BrokerId,
                         principalTable: "Broker",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Housing_Category_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Category",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -111,6 +130,11 @@ namespace TheMäklersAPI.Migrations
                 column: "BrokerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Housing_CategoryId",
+                table: "Housing",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Housing_MunicipalityId",
                 table: "Housing",
                 column: "MunicipalityId");
@@ -124,6 +148,9 @@ namespace TheMäklersAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Broker");
+
+            migrationBuilder.DropTable(
+                name: "Category");
 
             migrationBuilder.DropTable(
                 name: "Municipality");

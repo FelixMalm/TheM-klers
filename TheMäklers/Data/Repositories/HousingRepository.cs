@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TheMäklersAPI.Data.Repositories
 {
-    public class HousingRepository : IHousing
+    public class HousingRepository : IHousing //Author Kim
     {
         private readonly MäklersContext _context;
 
@@ -17,8 +17,15 @@ namespace TheMäklersAPI.Data.Repositories
 
         public async Task<IEnumerable<Housing>> GetHousingsAsync()
         {
-            return await _context.Housing.ToListAsync();
+            return await _context.Housing
+                .Include(h => h.Broker)
+
+                .Include(h => h.Municipality)
+                .Include(h => h.Category)
+                .ToListAsync();
         }
+
+
 
         public async Task<Housing> GetHousingByIdAsync(int id)
         {

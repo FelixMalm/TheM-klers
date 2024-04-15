@@ -1,6 +1,6 @@
 ﻿namespace TheMäklersAPI.Data.Models
 {
-    public class Municipality //Author Kim
+    public class Category //Author Kim
     {
         public int Id { get; set; }
         public string Name { get; set; }

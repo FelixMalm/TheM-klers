@@ -8,7 +8,7 @@ namespace TheMäklersAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class HousingsController : Controller
+    public class HousingsController : Controller //Author Kim
     {
         private readonly IHousing housingRepo;
 
