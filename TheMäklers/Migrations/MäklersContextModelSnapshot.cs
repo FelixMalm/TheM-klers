@@ -84,6 +84,23 @@ namespace TheMäklersAPI.Migrations
                     b.ToTable("Broker");
                 });
 
+            modelBuilder.Entity("TheMäklersAPI.Data.Models.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Category");
+                });
+
             modelBuilder.Entity("TheMäklersAPI.Data.Models.Housing", b =>
                 {
                     b.Property<int>("Id")
@@ -105,9 +122,8 @@ namespace TheMäklersAPI.Migrations
                     b.Property<int>("BrokerId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -141,6 +157,8 @@ namespace TheMäklersAPI.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BrokerId");
+
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("MunicipalityId");
 
@@ -178,18 +196,26 @@ namespace TheMäklersAPI.Migrations
             modelBuilder.Entity("TheMäklersAPI.Data.Models.Housing", b =>
                 {
                     b.HasOne("TheMäklersAPI.Data.Models.Broker", "Broker")
-                        .WithMany("Housings")
+                        .WithMany()
                         .HasForeignKey("BrokerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TheMäklersAPI.Data.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("TheMäklersAPI.Data.Models.Municipality", "Municipality")
-                        .WithMany("Housings")
+                        .WithMany()
                         .HasForeignKey("MunicipalityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Broker");
+
+                    b.Navigation("Category");
 
                     b.Navigation("Municipality");
                 });
@@ -197,16 +223,6 @@ namespace TheMäklersAPI.Migrations
             modelBuilder.Entity("TheMäklersAPI.Data.Models.Agency", b =>
                 {
                     b.Navigation("Brokers");
-                });
-
-            modelBuilder.Entity("TheMäklersAPI.Data.Models.Broker", b =>
-                {
-                    b.Navigation("Housings");
-                });
-
-            modelBuilder.Entity("TheMäklersAPI.Data.Models.Municipality", b =>
-                {
-                    b.Navigation("Housings");
                 });
 #pragma warning restore 612, 618
         }

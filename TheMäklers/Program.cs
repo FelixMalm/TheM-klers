@@ -12,10 +12,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddDbContext<MäklersContext>(options =>
+builder.Services.AddDbContext<MäklersContext>(options => //Author Kim
                 options.UseSqlServer(builder.Configuration.GetConnectionString("MäklersContext") ?? throw new InvalidOperationException("Connection string 'MäklersContext' not found.")));
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IHousing, HousingRepository>();
+builder.Services.AddScoped<IAgency, AgencyRepository>();
+builder.Services.AddScoped<IBroker, BrokerRepository>();
 
 var app = builder.Build();
 
@@ -31,5 +33,13 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope()) //Author Kim
+{
+    var services = scope.ServiceProvider;
+    var dbContext = services.GetRequiredService<MäklersContext>();
+
+    await SeedHelper.DataHelper(dbContext);
+}
 
 app.Run();
