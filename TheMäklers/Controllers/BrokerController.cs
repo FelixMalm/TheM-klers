@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using TheMäklersAPI.Data.Interfaces;
 using TheMäklersAPI.Data.Models;
-using TheMäklersAPI.Data.Repositories;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-// Linus Anderstedt
 namespace TheMäklersAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -12,14 +10,16 @@ namespace TheMäklersAPI.Controllers
     public class BrokerController : ControllerBase
     {
         private readonly IBroker brokerRepo;
+        private readonly IAgency AgencyRepo;
 
-        public BrokerController(IBroker brokerRepository)
+        public BrokerController(IBroker brokerRepository, IAgency agencyRepo)
         {
             brokerRepo = brokerRepository;
+            AgencyRepo = agencyRepo;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Broker>>> GetBroker()
+        public async Task<ActionResult<IEnumerable<Broker>>> GetBrokers()
         {
             var brokers = await brokerRepo.GetBrokersAsync();
             return Ok(brokers);
@@ -36,24 +36,79 @@ namespace TheMäklersAPI.Controllers
             return Ok(broker);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Broker>> PostBroker(Broker broker)
+        [HttpPost] //Author Felix
+        public async Task<ActionResult<Broker>> PostBroker([FromBody] BrokerDto brokerDto)
         {
-            await brokerRepo.AddBrokerAsync(broker);
-            return CreatedAtAction(nameof(GetBroker), new { id = broker.Id }, broker);
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var broker = new Broker
+                {
+                    FirstName = brokerDto.FirstName,
+                    LastName = brokerDto.LastName,
+                    Email = brokerDto.Email,
+                    PhoneNumber = brokerDto.PhoneNumber,
+                    ImageUrl = brokerDto.ImageUrl,
+                };
+
+                if (brokerDto.AgencyId.HasValue)
+                {
+                    var agency = await AgencyRepo.GetAgencyByIdAsync(brokerDto.AgencyId.Value);
+                    if (agency == null)
+                    {
+                        return BadRequest("Invalid agency Id");
+                    }
+                    broker.Agency = agency;
+                }
+
+                await brokerRepo.AddBrokerAsync(broker);
+                return CreatedAtAction(nameof(GetBroker), new { id = broker.Id }, broker);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"Error adding broker: {ex.Message}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
+
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBroker(int id, Broker broker)
+        public async Task<IActionResult> PutBroker(int id, [FromBody] BrokerDto brokerDto)
         {
-            if (id != broker.Id)
+            try
             {
-                return BadRequest();
-            }
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
 
-            await brokerRepo.UpdateBrokerAsync(broker);
-            return NoContent();
+                var broker = await brokerRepo.GetBrokerByIdAsync(id);
+                if (broker == null)
+                {
+                    return NotFound($"Broker with Id {id} not found");
+                }
+
+                broker.FirstName = brokerDto.FirstName;
+                broker.LastName = brokerDto.LastName;
+                broker.Email = brokerDto.Email;
+                broker.PhoneNumber = brokerDto.PhoneNumber;
+                broker.ImageUrl = brokerDto.ImageUrl;
+
+                await brokerRepo.UpdateBrokerAsync(broker);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return StatusCode(500, "Internal server error");
+            }
         }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBroker(int id)
@@ -67,5 +122,22 @@ namespace TheMäklersAPI.Controllers
             await brokerRepo.DeleteBrokerAsync(existingBroker);
             return NoContent();
         }
+    }
+
+    public class BrokerDto //Author Felix
+    {
+        [Required]
+        public string FirstName { get; set; }
+        [Required]
+        public string LastName { get; set; }
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+        [Required]
+        [Phone]
+        public string PhoneNumber { get; set; }
+        public string ImageUrl { get; set; }
+        [Required]
+        public int? AgencyId { get; set; }
     }
 }

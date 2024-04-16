@@ -1,19 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TheMäklersAPI.Data.Interfaces;
 using TheMäklersAPI.Data.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
-namespace TheMäklersAPI.Controllers
+namespace TheMäklersAPI.Controllers //Author Felix
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AgencyController : ControllerBase
+    public class AgencyController : ControllerBase //Author Felix
     {
         private readonly IAgency AgencyRepo;
-        public AgencyController(IAgency AgencyRepository)
+        private readonly IBroker BrokerRepo; // Add BrokerRepo
+
+        public AgencyController(IAgency AgencyRepository, IBroker BrokerRepository) // Update constructor
         {
             AgencyRepo = AgencyRepository;
+            BrokerRepo = BrokerRepository; // Initialize BrokerRepo
         }
 
         [HttpGet]
@@ -34,37 +38,88 @@ namespace TheMäklersAPI.Controllers
             return Ok(agency);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Agency>> Post([FromBody] Agency agency)
+        [HttpPost] //Author Felix
+        public async Task<ActionResult<Agency>> Post([FromBody] AgencyDto agencyDto) // Use AgencyDto
         {
-            if (agency == null)
-            {
-                return BadRequest();
-            }
-
-            await AgencyRepo.AddAgencyAsync(agency);
-            return CreatedAtAction(nameof(Get), new { id = agency.Id }, agency);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] Agency agency)
-        {
-            if (id != agency.Id)
-            {
-                return BadRequest();
-            }
-
             try
             {
-                await AgencyRepo.UpdateAgencyAsync(id);
-            }
-            catch (Exception)
-            {
-                return NotFound();
-            }
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
 
-            return NoContent();
+                var agency = new Agency
+                {
+                    Name = agencyDto.Name,
+                    Presentation = agencyDto.Presentation,
+                    LogoUrl = agencyDto.LogoUrl
+                };
+
+                if (agencyDto.BrokerId.HasValue)
+                {
+                    var broker = await BrokerRepo.GetBrokerByIdAsync(agencyDto.BrokerId.Value);
+                    if (broker == null)
+                    {
+                        return BadRequest("Invalid broker Id");
+                    }
+                    broker.Agency = agency;
+                }
+
+                await AgencyRepo.AddAgencyAsync(agency);
+                return CreatedAtAction(nameof(Get), new { id = agency.Id }, agency);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                // Handle the exception appropriately (e.g., return a 500 Internal Server Error response)
+                return StatusCode(500, "Internal server error");
+            }
         }
+
+        [HttpPut("{id}")] //Author Felix
+        public async Task<IActionResult> Put(int id, [FromBody] AgencyDto agencyDto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var agency = await AgencyRepo.GetAgencyByIdAsync(id);
+                if (agency == null)
+                {
+                    return NotFound($"Agency with Id {id} not found");
+                }
+
+                agency.Name = agencyDto.Name;
+                agency.Presentation = agencyDto.Presentation;
+                agency.LogoUrl = agencyDto.LogoUrl;
+
+                if (agencyDto.BrokerId.HasValue)
+                {
+                    var broker = await BrokerRepo.GetBrokerByIdAsync(agencyDto.BrokerId.Value);
+                    if (broker == null)
+                    {
+                        return BadRequest("Invalid broker Id");
+                    }
+                    broker.Agency = agency;
+                }
+                //else
+                //{
+                //    agency.Brokers = null; // Remove association if BrokerId is not provided
+                //}
+
+                await AgencyRepo.UpdateAgencyAsync(agency);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
@@ -78,5 +133,13 @@ namespace TheMäklersAPI.Controllers
             await AgencyRepo.DeleteAgencyAsync(id);
             return NoContent();
         }
+    }
+
+    public class AgencyDto //Author Felix
+    {
+        public string Name { get; set; }
+        public string Presentation { get; set; }
+        public string LogoUrl { get; set; }
+        public int? BrokerId { get; set; } 
     }
 }

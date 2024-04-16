@@ -30,8 +30,6 @@ namespace TheMäklersAPI.Data
                     LogoUrl = "harbor_view_logo.png",
                 };
 
-
-
                 var broker1 = new Broker
                 {
                     FirstName = "John",
@@ -131,13 +129,6 @@ namespace TheMäklersAPI.Data
                     ImageUrl = "jessica_thomas_photo.jpg",
                     Agency = agency3
                 };
-
-
-
-
-
-
-
 
                 var municipality1 = new Municipality { Name = "Ale" };
                 var municipality2 = new Municipality { Name = "Alingsås" };

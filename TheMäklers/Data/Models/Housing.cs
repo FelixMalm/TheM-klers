@@ -6,8 +6,13 @@ namespace TheMäklersAPI.Data.Models
     {
         [Key]
         public int Id { get; set; }
+        [Required]
         public string Address { get; set; }
+        [Required]
+        [Range(0.0001, double.MaxValue, ErrorMessage = "Value must be greater than 0")]
         public double InitialPrice { get; set; }
+        [Required]
+        [Range(0.0001, double.MaxValue, ErrorMessage = "Value must be greater than 0")]
         public double LivingArea { get; set; }
         public double AdditionalArea { get; set; }
         public double PlotArea { get; set; }

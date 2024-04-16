@@ -5,7 +5,7 @@ VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheMäklersAPI", "TheMäklers\TheMäklersAPI.csproj", "{52AD11D3-901C-404A-892D-6A0FEF443F7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheMäklersBlazor", "TheMäklersBlazor\TheMäklersBlazor.csproj", "{72DD889C-4142-4BFA-A493-0520B366C1E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheMäklersBlazor", "TheMäklersBlazor\TheMäklersBlazor.csproj", "{72DD889C-4142-4BFA-A493-0520B366C1E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
