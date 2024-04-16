@@ -2,8 +2,6 @@
 using TheMäklersAPI.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-
-
 namespace TheMäklersAPI.Data.Repositories
 {
     public class HousingRepository : IHousing //Author Kim
@@ -19,17 +17,22 @@ namespace TheMäklersAPI.Data.Repositories
         {
             return await _context.Housing
                 .Include(h => h.Broker)
-
+                .Include(h => h.Broker.Agency)
                 .Include(h => h.Municipality)
                 .Include(h => h.Category)
                 .ToListAsync();
         }
 
-
-
         public async Task<Housing> GetHousingByIdAsync(int id)
         {
-            return await _context.Housing.FindAsync(id);
+            var housing = await _context.Housing
+                .Include(h => h.Broker)
+                .Include(h => h.Broker.Agency)
+                .Include(h => h.Municipality)
+                .Include(h => h.Category)
+                .FirstOrDefaultAsync(h => h.Id == id);
+
+            return housing;
         }
 
         public async Task AddHousingAsync(Housing housing)

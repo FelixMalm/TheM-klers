@@ -14,22 +14,40 @@ namespace TheMäklersAPI.Data.Repositories
         }
         public async Task<IEnumerable<Agency>> GetAgencyAsync()
         {
-            return await _context.Agency.ToListAsync();
+            return await _context.Agency.Include(s => s.Brokers).ToListAsync();
         }
         public async Task<Agency> GetAgencyByIdAsync(int id)
         {
+            var agency  = await _context.Agency.FindAsync(id);
+            if (agency != null)
+            {
+                await _context.Entry(agency).Reference(s => s.Brokers).LoadAsync();
+            }
             return await _context.Agency.FindAsync(id);
+        }
+
+        public async Task<Broker> GetBrokerByIdAsync(int id)
+        {
+            var broker = await _context.Broker.FindAsync(id);
+
+            if (broker != null)
+            {
+                await _context.Entry(broker).Reference(s => s.Agency).LoadAsync();
+            }
+
+            return broker;
         }
         public async Task AddAgencyAsync(Agency agency)
         {
             _context.Agency.Add(agency);
             await _context.SaveChangesAsync();
         }
-        public async Task UpdateAgencyAsync(int id)
+        public async Task UpdateAgencyAsync(Agency agency)
         {
-            _context.Entry(id).State = EntityState.Modified;
+            _context.Entry(agency).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
+
         public async Task DeleteAgencyAsync(int id)
         {
             var agencyToDelete = await _context.Agency.FindAsync(id);

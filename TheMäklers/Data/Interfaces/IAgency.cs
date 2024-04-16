@@ -8,7 +8,7 @@ namespace TheMäklersAPI.Data.Interfaces
         Task<Agency> GetAgencyByIdAsync(int id);
         Task<Agency> GetAgencyByNameAsync(string name);
         Task AddAgencyAsync(Agency agency);
-        Task UpdateAgencyAsync(int id);
+        Task UpdateAgencyAsync(Agency agency);
         Task DeleteAgencyAsync(int id);
     }
 }

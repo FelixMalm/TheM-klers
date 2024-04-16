@@ -2,7 +2,6 @@
 using TheMäklersAPI.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-
 // Linus Anderstedt
 namespace TheMäklersAPI.Data.Repositories
 {
@@ -17,13 +16,21 @@ namespace TheMäklersAPI.Data.Repositories
 
 		public async Task<IEnumerable<Broker>> GetBrokersAsync()
 		{
-			return await _context.Broker.ToListAsync();
+			return await _context.Broker.Include(s => s.Agency).ToListAsync();
 		}
 
         public async Task<Broker> GetBrokerByIdAsync(int id)
         {
-            return await _context.Broker.FindAsync(id);
+            var broker = await _context.Broker.FindAsync(id);
+
+            if (broker != null)
+            {
+                await _context.Entry(broker).Reference(s => s.Agency).LoadAsync();
+            }
+
+            return broker;
         }
+
 
         public async Task AddBrokerAsync(Broker broker)
         {
