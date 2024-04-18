@@ -1,0 +1,50 @@
+﻿/* Brokers.razor.css */
+
+.broker-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.broker-item {
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.broker-details {
+    margin-left: 20px;
+    text-align: left;
+}
+
+    .broker-details div {
+        margin-bottom: 8px;
+    }
+
+    .broker-details strong {
+        font-weight: bold;
+    }
+
+    .broker-details a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+        .broker-details a:hover {
+            text-decoration: underline;
+        }
+
+.broker-image img {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    object-fit: cover;
+}

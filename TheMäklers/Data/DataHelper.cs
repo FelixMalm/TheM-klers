@@ -11,23 +11,23 @@ namespace TheMäklersAPI.Data
                 // Create Agency instances
                 var agency1 = new Agency
                 {
-                    Name = "Prime Properties",
+                    Name = "Bill Robertson",
                     Presentation = "Luxury Living Experts",
-                    LogoUrl = "prime_properties_logo.png",
+                    LogoUrl = "https://cdn.logojoy.com/wp-content/uploads/2018/05/30150844/1415.png",
                 };
 
                 var agency2 = new Agency
                 {
-                    Name = "Metro Realty Group",
+                    Name = "Real Estate",
                     Presentation = "Your Urban Lifestyle Specialists",
-                    LogoUrl = "metro_realty_logo.png",
+                    LogoUrl = "https://img.freepik.com/free-vector/real-estate-logo-template_1195-19.jpg",
                 };
 
                 var agency3 = new Agency
                 {
-                    Name = "Harbor View Realty",
+                    Name = "Modern Home",
                     Presentation = "Coastal Living at Its Finest",
-                    LogoUrl = "harbor_view_logo.png",
+                    LogoUrl = "https://marketplace.canva.com/EAE2plelYDk/1/0/1600w/canva-modern-real-estate-agency-logo-template-l-8rw0yv5RA.jpg",
                 };
 
                 var broker1 = new Broker
@@ -36,7 +36,7 @@ namespace TheMäklersAPI.Data
                     LastName = "Doe",
                     Email = "john.doe@example.com",
                     PhoneNumber = "123-456-7890",
-                    ImageUrl = "john_doe_photo.jpg",
+                    ImageUrl = "https://bilder.hemnet.se/images/broker_profile_large/16/91/1691d7d43132f638d416b814532bc989.jpg",
                     Agency = agency1
                 };
 
@@ -46,7 +46,7 @@ namespace TheMäklersAPI.Data
                     LastName = "Smith",
                     Email = "emily.smith@example.com",
                     PhoneNumber = "234-567-8901",
-                    ImageUrl = "emily_smith_photo.jpg",
+                    ImageUrl = "https://bilder.hemnet.se/images/broker_profile_large/f5/da/f5da602bc40d3fdaedaa2412398deba3.jpg",
                     Agency = agency1
                 };
 
@@ -56,7 +56,7 @@ namespace TheMäklersAPI.Data
                     LastName = "Johnson",
                     Email = "michael.johnson@example.com",
                     PhoneNumber = "345-678-9012",
-                    ImageUrl = "michael_johnson_photo.jpg",
+                    ImageUrl = "https://bilder.hemnet.se/images/broker_profile_large/22/05/2205a46acb2ce4570505ffa72f8d8df0.png",
                     Agency = agency2
                 };
 
@@ -66,7 +66,7 @@ namespace TheMäklersAPI.Data
                     LastName = "Brown",
                     Email = "jessica.brown@example.com",
                     PhoneNumber = "456-789-0123",
-                    ImageUrl = "jessica_brown_photo.jpg",
+                    ImageUrl = "https://bilder.hemnet.se/images/broker_profile_large/8a/07/8a0797543b3d208e789583211d4e091a.jpg",
                     Agency = agency2
                 };
 
@@ -76,7 +76,7 @@ namespace TheMäklersAPI.Data
                     LastName = "Martinez",
                     Email = "david.martinez@example.com",
                     PhoneNumber = "567-890-1234",
-                    ImageUrl = "david_martinez_photo.jpg",
+                    ImageUrl = "https://bilder.hemnet.se/images/broker_profile_large/3f/87/3f87ed4178955da1f8f699c1b27f4033.jpg",
                     Agency = agency2
                 };
 
@@ -86,7 +86,7 @@ namespace TheMäklersAPI.Data
                     LastName = "Garcia",
                     Email = "jennifer.garcia@example.com",
                     PhoneNumber = "678-901-2345",
-                    ImageUrl = "jennifer_garcia_photo.jpg",
+                    ImageUrl = "https://bilder.hemnet.se/images/broker_profile_large/b2/4e/b24e75cdd8f1d95e25321da17607058c.jpg",
                     Agency = agency3
                 };
 
@@ -96,7 +96,7 @@ namespace TheMäklersAPI.Data
                     LastName = "Wilson",
                     Email = "christopher.wilson@example.com",
                     PhoneNumber = "789-012-3456",
-                    ImageUrl = "christopher_wilson_photo.jpg",
+                    ImageUrl = "https://bilder.hemnet.se/images/broker_profile_large/da/73/da73431cec8b93e979ebea305ef6675c.jpg",
                     Agency = agency3
                 };
 
@@ -106,7 +106,7 @@ namespace TheMäklersAPI.Data
                     LastName = "Anderson",
                     Email = "ashley.anderson@example.com",
                     PhoneNumber = "890-123-4567",
-                    ImageUrl = "ashley_anderson_photo.jpg",
+                    ImageUrl = "https://bilder.hemnet.se/images/broker_profile_large/7b/82/7b82dcc7354c9f67c4a4da81675ce89f.jpg",
                     Agency = agency3
                 };
 
@@ -116,7 +116,7 @@ namespace TheMäklersAPI.Data
                     LastName = "Taylor",
                     Email = "matthew.taylor@example.com",
                     PhoneNumber = "901-234-5678",
-                    ImageUrl = "matthew_taylor_photo.jpg",
+                    ImageUrl = "https://bilder.hemnet.se/images/broker_profile_large/10/8d/108de1efe4f487cefd817d47cb0b6f66.jpg",
                     Agency = agency3
                 };
 
@@ -126,7 +126,7 @@ namespace TheMäklersAPI.Data
                     LastName = "Thomas",
                     Email = "jessica.thomas@example.com",
                     PhoneNumber = "012-345-6789",
-                    ImageUrl = "jessica_thomas_photo.jpg",
+                    ImageUrl = "https://bilder.hemnet.se/images/broker_profile_large/1b/92/1b9206e0d8fc0a6e7bbb75400172e85d.jpg",
                     Agency = agency3
                 };
 
@@ -141,10 +141,10 @@ namespace TheMäklersAPI.Data
                 var municipality9 = new Municipality { Name = "Askersund" };
                 var municipality10 = new Municipality { Name = "Avesta" };
 
-                var category1 = new Category { Name = "House" };
-                var category2 = new Category { Name = "Cottage" };
-                var category3 = new Category { Name = "Condo" };
-                var category4 = new Category { Name = "Condo Terraced House" };
+                var category1 = new Category { Name = "Apartment" };
+                var category2 = new Category { Name = "Villas" };
+                var category3 = new Category { Name = "Leisure house" };
+                var category4 = new Category { Name = "New production" };
 
 
                 var housing1 = new Housing
@@ -159,7 +159,7 @@ namespace TheMäklersAPI.Data
                     MonthlyFee = 100,
                     AnnualOperatingCost = 2000,
                     YearBuilt = 2000,
-                    Images = new List<string> { "image_url1", "image_url2" },
+                    Images = new List<string> { "https://bilder.hemnet.se/images/itemgallery_cut/f9/f4/f9f4298330076bc60e7731cc5af0ed7a.jpg", "https://bilder.hemnet.se/images/itemgallery_cut/8b/31/8b316314aad2956a958e0e61ee77e0a2.jpg" },
                     Municipality = municipality1,
                     Broker = broker1,
                     Category = category1
