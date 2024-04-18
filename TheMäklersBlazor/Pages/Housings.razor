@@ -1,0 +1,129 @@
+﻿@page "/housings"
+@using System.Net.Http
+@using System.Text.Json
+@using TheMäklersBlazor.Models
+@inject HttpClient httpClient
+
+<!-- Author Kim Jonsson -->
+
+<h1>Housings</h1>
+
+<div class="filters">
+   
+    <input type="text" placeholder="Search by ID" @bind="searchId" />
+
+    
+    <select @bind="selectedMunicipality">
+        <option value="">All Municipalities</option>
+        @foreach (var municipality in municipalities)
+        {
+            <option value="@municipality">@municipality</option>
+        }
+    </select>
+
+    
+    <select @bind="selectedCategory">
+        <option value="">All Categories</option>
+        @foreach (var category in categories)
+        {
+            <option value="@category">@category</option>
+        }
+    </select>
+</div>
+
+@if (housingList == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+   
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Address</th>
+                <th>Initial Price</th>
+                <th>Broker</th>
+                <th>Category</th>
+                <th>Municipality</th>
+                <th>Number of Rooms</th>
+                
+                
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var housing in filteredHousings)
+            {
+                <tr>
+                    <td>
+                        @foreach (var image in housing.images)
+                        {
+                            <img src="@image" alt="Housing Image" width="50" height="50" />
+                        }
+                    </td>
+                    <td>@housing.address</td>
+                    <td>@housing.initialPrice</td>
+                    <td>@housing.broker.firstName</td>
+                    <td>@housing.category.name</td>
+                    <td>@housing.municipality.name</td>
+                    <td>@housing.numberOfRooms</td>
+                    
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Housing[] housingList;
+    private Broker[] brokerList;
+    private Agency[] agencyList;
+    private string searchId = "";
+    private string selectedMunicipality = "";
+    private string selectedCategory = "";
+    private string[] municipalities = { "Ale", "Alingsås", "Alvesta", "Aneby", "Arboga" }; 
+    private string[] categories = { "Apartment", "Villas", "New production", "Leisure house" };
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            housingList = await httpClient.GetFromJsonAsync<Housing[]>("https://localhost:7078/api/Housings");
+            brokerList = await httpClient.GetFromJsonAsync<Broker[]>("https://localhost:7078/api/Broker");
+            agencyList = await httpClient.GetFromJsonAsync<Agency[]>("https://localhost:7078/api/Agency");
+        }
+        catch (Exception ex)
+        {
+            
+            Console.WriteLine($"Error fetching data: {ex.Message}");
+        }
+    }
+
+    
+    private IEnumerable<Housing> filteredHousings
+    {
+        get
+        {
+            var filtered = housingList.AsEnumerable();
+
+            if (!string.IsNullOrEmpty(searchId))
+            {
+                filtered = filtered.Where(h => h.id.ToString().Contains(searchId));
+            }
+
+            if (!string.IsNullOrEmpty(selectedMunicipality))
+            {
+                filtered = filtered.Where(h => h.municipality.name == selectedMunicipality);
+            }
+
+            if (!string.IsNullOrEmpty(selectedCategory))
+            {
+                filtered = filtered.Where(h => h.category.name == selectedCategory);
+            }
+
+            return filtered;
+        }
+    }
+}
