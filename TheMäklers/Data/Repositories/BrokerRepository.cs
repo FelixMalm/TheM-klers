@@ -14,10 +14,10 @@ namespace TheMäklersAPI.Data.Repositories
 			_context = context;
 		}
 
-		public async Task<IEnumerable<Broker>> GetBrokersAsync()
-		{
-			return await _context.Broker.Include(s => s.Agency).ToListAsync();
-		}
+        public async Task<IEnumerable<Broker>> GetBrokersAsync()
+        {
+            return await _context.Broker.Include(b => b.Agency).ToListAsync();
+        }
 
         public async Task<Broker> GetBrokerByIdAsync(int id)
         {
