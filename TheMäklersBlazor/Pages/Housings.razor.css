@@ -1,0 +1,47 @@
+﻿/* Container for housing items */
+.housing-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Individual housing item */
+.housing-item {
+    width: calc(33.33% - 20px); /* Adjust the width as needed */
+    margin: 10px;
+}
+
+/* Container for card layout */
+.card-container {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Container for housing image */
+.image-container {
+    position: relative;
+    height: 200px; /* Set the height of the image container */
+    overflow: hidden;
+}
+
+    /* Housing image */
+    .image-container img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+
+/* Container for housing information */
+.info-container {
+    padding: 15px;
+}
+
+/* Agency logo */
+.agency-logo {
+    width: 150px; /* Adjust the size of the agency logo */
+    height: auto;
+    display: block;
+    margin: 10px auto; /* Center the logo horizontally */
+}

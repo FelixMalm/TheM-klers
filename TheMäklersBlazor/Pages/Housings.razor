@@ -37,43 +37,45 @@
 }
 else
 {
-   
-    
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Image</th>
-                <th>Address</th>
-                <th>Initial Price</th>
-                <th>Broker</th>
-                <th>Category</th>
-                <th>Municipality</th>
-                <th>Number of Rooms</th>
-                
-                
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var housing in filteredHousings)
-            {
-                <tr>
-                    <td>
-                        @foreach (var image in housing.images)
+
+
+    <div class="housing-list">
+        @foreach (var housing in filteredHousings)
+        {
+            <div class="housing-item">
+                <div class="card-container">
+                    <div class="image-container">
+                        @if (housing.images.Any())
                         {
-                            <img src="@image" alt="Housing Image" width="50" height="50" />
+                            <img src="@housing.images.First()" alt="Housing Image" />
                         }
-                    </td>
-                    <td>@housing.address</td>
-                    <td>@housing.initialPrice</td>
-                    <td>@housing.broker.firstName</td>
-                    <td>@housing.category.name</td>
-                    <td>@housing.municipality.name</td>
-                    <td>@housing.numberOfRooms</td>
-                    
-                </tr>
-            }
-        </tbody>
-    </table>
+                        else
+                        {
+                            <img src="placeholder.jpg" alt="No Image Available" />
+                        }
+                    </div>
+                    <div class="info-container">
+                        <ul>
+                            <li><strong>Address:</strong> @housing.address</li>
+                            <li><strong>Initial Price:</strong> @housing.initialPrice</li>
+                            <li><strong>Living Area:</strong> @housing.livingArea</li>
+                            <li><strong>Agency:</strong> @housing.broker.agency.name</li>
+                        </ul>
+                        @if (!string.IsNullOrEmpty(housing.broker.agency.logoUrl))
+                        {
+                            <img src="@housing.broker.agency.logoUrl" alt="Agency Logo" class="agency-logo" />
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+
+
+
+
+
 }
 
 @code {
