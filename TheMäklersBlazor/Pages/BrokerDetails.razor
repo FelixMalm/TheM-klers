@@ -1,0 +1,58 @@
+﻿@page "/BrokerDetails/{BrokerId}"
+@using System.Net.Http
+@using System.Text.Json
+@using TheMäklersBlazor.Models
+@inject HttpClient httpClient
+
+<!-- Author Kim Jonsson -->
+@if (broker == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="broker-details">
+        <div class="section">
+            <h4>Broker Details</h4>
+            <ul>
+                <li><strong>Name:</strong> @broker.firstName @broker.lastName</li>
+                <li><strong>Email:</strong> @broker.email</li>
+                <li><strong>Phone Number:</strong> @broker.phoneNumber</li>
+                <li><strong>Agency:</strong> @broker.agency.name</li>
+            </ul>
+        </div>
+        <div class="section">
+            <h4>Image</h4>
+            @if (!string.IsNullOrEmpty(broker.imageUrl))
+            {
+                <img src="@broker.imageUrl" alt="Broker Image" />
+            }
+            else
+            {
+                <p>No image available</p>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    private Broker broker;
+
+    [Parameter]
+    public string BrokerId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrEmpty(BrokerId) && int.TryParse(BrokerId, out int id))
+        {
+            try
+            {
+                broker = await httpClient.GetFromJsonAsync<Broker>($"https://localhost:7078/api/Broker/{id}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching broker details: {ex.Message}");
+            }
+        }
+    }
+}

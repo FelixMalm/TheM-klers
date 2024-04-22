@@ -1,0 +1,64 @@
+﻿@page "/AgencyDetails/{AgencyId}"
+@using System.Net.Http
+@using System.Text.Json
+@using TheMäklersBlazor.Models
+@inject HttpClient httpClient
+
+<!-- Author Kim Jonsson -->
+@if (agency == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="agency-details">
+        <div class="section">
+            <h4>Agency Details</h4>
+            <ul>
+                <li><strong>Name:</strong> @agency.name</li>
+                <li><strong>Presentation:</strong> @agency.presentation</li>
+            </ul>
+            @if (!string.IsNullOrEmpty(agency.logoUrl))
+            {
+                <img src="@agency.logoUrl" alt="Agency Logo" class="agency-logo" />
+            }
+        </div>
+        <div class="section">
+            <h4>Brokers</h4>
+            <ul>
+                @foreach (var broker in agency.brokers)
+                {
+                    <li>
+                        <a href="BrokerDetails/@broker.id">@broker.firstName @broker.lastName</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+
+
+
+
+}
+
+@code {
+    private Agency1 agency;
+
+    [Parameter]
+    public string AgencyId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrEmpty(AgencyId) && int.TryParse(AgencyId, out int id))
+        {
+            try
+            {
+                agency = await httpClient.GetFromJsonAsync<Agency1>($"https://localhost:7078/api/Agency/{id}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching agency details: {ex.Message}");
+            }
+        }
+    }
+}

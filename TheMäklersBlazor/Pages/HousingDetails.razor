@@ -1,0 +1,93 @@
+﻿@page "/HousingDetails/{HousingId}"
+@using System.Net.Http
+@using System.Text.Json
+@using TheMäklersBlazor.Models
+@inject HttpClient httpClient
+<!-- Author Kim Jonsson -->
+<head>
+    <title>Housing Details</title>
+
+    <script src="/JsFiles/slider.js"></script>
+
+</head>
+
+<div class="housing-details">
+    @if (housing != null)
+    {
+        <div class="text-section">
+            <div class="section">
+                <h4>Property Details</h4>
+                <ul>
+                    <li><strong>Address:</strong> @housing.address</li>
+                    <li><strong>Initial Price:</strong> @housing.initialPrice</li>
+                    <li><strong>Living Area:</strong> @housing.livingArea sqft</li>
+                    <li><strong>Additional Area:</strong> @housing.additionalArea sqft</li>
+                    <li><strong>Plot Area:</strong> @housing.plotArea sqft</li>
+                    <li><strong>Description:</strong> @housing.description</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h4>Financial Details</h4>
+                <ul>
+                    <li><strong>Monthly Fee:</strong> $@housing.monthlyFee</li>
+                    <li><strong>Annual Operating Cost:</strong> $@housing.annualOperatingCost</li>
+                </ul>
+            </div>
+            <div class="section">
+                <h4>Other Details</h4>
+                <ul>
+                    <li><strong>Number of Rooms:</strong> @housing.numberOfRooms</li>
+                    <li><strong>Year Built:</strong> @housing.yearBuilt</li>
+                    <li><strong>Category:</strong> @housing.category.name</li>
+                    <li><strong>Broker:</strong> @housing.broker.firstName @housing.broker.lastName</li>
+                    <li><strong>Municipality:</strong> @housing.municipality.name</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="slider-section">
+            <div class="section">
+                <h4>Images</h4>
+                <div class="slider">
+                    <div class="slides">
+                        @foreach (var image in housing.images)
+                        {
+                            <img src="@image" alt="Housing Image" class="slide">
+                        }
+                    </div>
+                    <button class="prev" onclick="prevSlide()">❮</button>
+                    <button class="next" onclick="nextSlide()">❯</button>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <p>Loading...</p>
+    }
+</div>
+
+
+
+@code {
+    private Housing housing;
+
+    [Parameter]
+    public string HousingId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrEmpty(HousingId) && int.TryParse(HousingId, out int id))
+        {
+            try
+            {
+                housing = await httpClient.GetFromJsonAsync<Housing>($"https://localhost:7078/api/Housings/{id}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching housing details: {ex.Message}");
+            }
+        }
+    }
+}
