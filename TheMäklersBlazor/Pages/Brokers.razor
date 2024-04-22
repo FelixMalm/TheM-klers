@@ -25,7 +25,7 @@ else
             <div class="broker-details">
                 <div><strong>First Name:</strong> @broker.firstName</div>
                 <div><strong>Last Name:</strong> @broker.lastName</div>
-                <div><strong>Agency:</strong> <a href="@($"https://yourdomain.com/agencies/{broker.agency.id}")">@broker.agency.name</a></div>
+                <div><strong>Agency:</strong> <a href="@($"AgencyDetails/{broker.agency.id}")">@broker.agency.name</a></div>
             </div>
         </div>
     }

@@ -2,26 +2,29 @@
 .housing-list {
     display: flex;
     flex-wrap: wrap;
+    gap: 20px; /* Add gap between housing items */
     justify-content: center;
 }
 
 /* Individual housing item */
 .housing-item {
-    width: calc(33.33% - 20px); /* Adjust the width as needed */
-    margin: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px; /* Adjust the width as needed */
+    margin-top: 5rem;
 }
 
 /* Container for card layout */
 .card-container {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    
 }
 
 /* Container for housing image */
 .image-container {
-    position: relative;
     height: 200px; /* Set the height of the image container */
     overflow: hidden;
 }
@@ -40,8 +43,29 @@
 
 /* Agency logo */
 .agency-logo {
-    width: 150px; /* Adjust the size of the agency logo */
-    height: auto;
-    display: block;
-    margin: 10px auto; /* Center the logo horizontally */
+    width: 100%; /* Set the width of the agency logo to fill the container */
+    height: 100%; /* Set the height of the agency logo to fill the container */
+    object-fit: cover;
 }
+
+/* Additional styles */
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 10px;
+}
+
+strong {
+    margin-right: 5px;
+}
+
+/* Apply styles to all anchor elements */
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+
