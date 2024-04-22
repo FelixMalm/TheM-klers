@@ -2,7 +2,7 @@
 
 namespace TheMäklersAPI.Data.Interfaces
 {
-    public interface IAgency
+    public interface IAgency //Author Felix
     {
         Task<IEnumerable<Agency>> GetAgencyAsync();
         Task<Agency> GetAgencyByIdAsync(int id);

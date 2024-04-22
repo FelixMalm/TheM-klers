@@ -1,0 +1,67 @@
+﻿@page "/agency"
+@using System.Net.Http
+@using System.Text.Json
+@using TheMäklersBlazor.Models
+@inject HttpClient httpClient
+
+<!-- Author Felix -->
+
+@if (agencyList == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="agency-list">
+        @foreach (var agency in agencyList)
+        {
+            <div class="agency-item">
+                <div class="card-container">
+                    <div class="image-container">
+                        @if (!string.IsNullOrEmpty(agency.logoUrl))
+                        {
+                            <img src="@agency.logoUrl" alt="Agency Logo" class="agency-logo" />
+                        }
+                        else
+                        {
+                            <img src="placeholder.jpg" alt="No Logo Available" />
+                        }
+                    </div>
+                    <div class="info-container">
+                        <ul>
+                            <li><strong>Company:</strong> @agency.name</li>
+                            <li><strong>Presentation:</strong> @agency.presentation</li>
+                            <li><strong>Brokers:</strong></li>
+                            <ul>
+                                @foreach (var broker in agency.brokers)
+                                {
+                                    <li>@broker.firstName @broker.lastName</li>
+                                }
+                            </ul>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+
+@code {
+    private Agency1[] agencyList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            agencyList = await httpClient.GetFromJsonAsync<Agency1[]>("https://localhost:7078/api/Agency");
+
+            //Console.WriteLine(JsonSerializer.Serialize(agencyList));
+        }
+        catch (Exception ex)
+        {
+            // Handle exception (e.g., log, display error message)
+            Console.WriteLine($"Error fetching brokers: {ex.Message}");
+        }
+    }
+}

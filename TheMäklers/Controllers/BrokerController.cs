@@ -77,7 +77,7 @@ namespace TheMäklersAPI.Controllers
         }
 
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}")] //Author Felix
         public async Task<IActionResult> PutBroker(int id, [FromBody] BrokerDto brokerDto)
         {
             try

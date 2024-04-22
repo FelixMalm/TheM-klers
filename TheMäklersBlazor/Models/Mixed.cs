@@ -47,6 +47,14 @@
         public string logoUrl { get; set; }
         public Broker1[] brokers { get; set; }
     }
+    public class Agency1
+    {
+        public int id { get; set; }
+        public string name { get; set; }
+        public string presentation { get; set; }
+        public string logoUrl { get; set; }
+        public Broker[] brokers { get; set; }
+    }
 
     public class Broker1
     {
@@ -69,8 +77,4 @@
         public int id { get; set; }
         public string name { get; set; }
     }
-
-
-
-
 }
