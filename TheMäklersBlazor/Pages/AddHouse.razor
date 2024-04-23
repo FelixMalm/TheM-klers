@@ -1,0 +1,192 @@
+﻿@page "/AddHouse"
+@using System.Net.Http
+@using System.ComponentModel.DataAnnotations
+@inject HttpClient Http
+
+<h3>Add Housing</h3>
+
+@if (isError)
+{
+    <p class="text-danger">@errorMessage</p>
+}
+
+<div class="form-group">
+    <label for="address">Address</label>
+    <input type="text" class="form-control" @bind="newHousing.address" />
+    <span class="text-danger">@GetValidationMessage("address")</span>
+</div>
+
+<div class="form-group">
+    <label for="initialPrice">Initial Price</label>
+    <input type="number" class="form-control" @bind="newHousing.initialPrice" />
+    <span class="text-danger">@GetValidationMessage("initialPrice")</span>
+</div>
+
+<div class="form-group">
+    <label for="livingArea">Living Area</label>
+    <input type="number" class="form-control" @bind="newHousing.livingArea" />
+    <span class="text-danger">@GetValidationMessage("livingArea")</span>
+</div>
+
+<div class="form-group">
+    <label for="additionalArea">Additional Area</label>
+    <input type="number" class="form-control" @bind="newHousing.additionalArea" />
+    <span class="text-danger">@GetValidationMessage("additionalArea")</span>
+</div>
+
+<div class="form-group">
+    <label for="plotArea">Plot Area</label>
+    <input type="number" class="form-control" @bind="newHousing.plotArea" />
+    <span class="text-danger">@GetValidationMessage("plotArea")</span>
+</div>
+
+<div class="form-group">
+    <label for="description">Description</label>
+    <textarea class="form-control" @bind="newHousing.description"></textarea>
+    <span class="text-danger">@GetValidationMessage("description")</span>
+</div>
+
+<div class="form-group">
+    <label for="numberOfRooms">Number of Rooms</label>
+    <input type="number" class="form-control" @bind="newHousing.numberOfRooms" />
+    <span class="text-danger">@GetValidationMessage("numberOfRooms")</span>
+</div>
+
+<div class="form-group">
+    <label for="monthlyFee">Monthly Fee</label>
+    <input type="number" class="form-control" @bind="newHousing.monthlyFee" />
+    <span class="text-danger">@GetValidationMessage("monthlyFee")</span>
+</div>
+
+<div class="form-group">
+    <label for="annualOperatingCost">Annual Operating Cost</label>
+    <input type="number" class="form-control" @bind="newHousing.annualOperatingCost" />
+    <span class="text-danger">@GetValidationMessage("annualOperatingCost")</span>
+</div>
+
+<div class="form-group">
+    <label for="yearBuilt">Year Built</label>
+    <input type="number" class="form-control" @bind="newHousing.yearBuilt" />
+    <span class="text-danger">@GetValidationMessage("yearBuilt")</span>
+</div>
+
+<div class="form-group">
+    <label for="brokerId">Broker</label>
+    <select class="form-control" @bind="newHousing.brokerId">
+        <option value="">Select Broker</option>
+        @foreach (var broker in brokers)
+        {
+            <option value="@broker.id">@broker.firstName @broker.lastName</option>
+        }
+    </select>
+    <span class="text-danger">@GetValidationMessage("brokerId")</span>
+</div>
+
+<div class="form-group">
+    <label for="municipalityId">Municipality</label>
+    <select class="form-control" @bind="newHousing.municipalityId">
+        <option value="">Select Municipality</option>
+        @foreach (var municipality in municipalities)
+        {
+            <option value="@municipality.id">@municipality.name</option>
+        }
+    </select>
+    <span class="text-danger">@GetValidationMessage("municipalityId")</span>
+</div>
+
+<div class="form-group">
+    <label for="categoryId">Category</label>
+    <select class="form-control" @bind="newHousing.categoryId">
+        <option value="">Select Category</option>
+        @foreach (var category in categories)
+        {
+            <option value="@category.id">@category.name</option>
+        }
+    </select>
+    <span class="text-danger">@GetValidationMessage("categoryId")</span>
+</div>
+
+<div class="form-group">
+    <button class="btn btn-primary" @onclick="SaveHousing">Add Housing</button>
+</div>
+
+@code {
+    private Housing newHousing = new Housing();
+    private Dictionary<string, string> validationMessages = new Dictionary<string, string>();
+    private bool isError = false;
+    private string errorMessage = "";
+    private List<Broker> brokers = new List<Broker>();
+    private List<Municipality> municipalities = new List<Municipality>();
+    private List<Category> categories = new List<Category>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            brokers = await Http.GetFromJsonAsync<List<Broker>>("https://localhost:7078/api/Broker");
+
+            var housings = await Http.GetFromJsonAsync<List<Housing>>("https://localhost:7078/api/Housings");
+
+            municipalities = housings.Select(h => h.municipality).Distinct().ToList();
+
+            categories = housings.Select(h => h.category).Distinct().ToList();
+        }
+        catch (HttpRequestException httpEx)
+        {
+            isError = true;
+            errorMessage = $"HTTP request error: {httpEx.Message}";
+            Console.WriteLine($"HTTP request error: {httpEx.Message}");
+        }
+        catch (Exception ex)
+        {
+            isError = true;
+            errorMessage = $"An error occurred: {ex.Message}";
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
+    }
+
+    private async Task SaveHousing()
+    {
+        try
+        {
+            var validationResults = new List<ValidationResult>();
+            var validationContext = new ValidationContext(newHousing, null, null);
+            bool isValid = Validator.TryValidateObject(newHousing, validationContext, validationResults, true);
+
+            if (!isValid)
+            {
+                validationMessages = validationResults.ToDictionary(vr => vr.MemberNames.FirstOrDefault() ?? "", vr => vr.ErrorMessage);
+                return;
+            }
+
+            var response = await Http.PostAsJsonAsync("api/Housings", newHousing);
+
+            if (response.IsSuccessStatusCode)
+            {
+                newHousing = new Housing();
+                validationMessages.Clear();
+                isError = false;
+                errorMessage = "Housing added successfully!";
+            }
+            else
+            {
+                isError = true;
+                errorMessage = "Failed to add housing. Please try again later.";
+            }
+        }
+        catch (Exception ex)
+        {
+            isError = true;
+            errorMessage = "An error occurred while adding housing. Please try again later.";
+        }
+    }
+
+    private string GetValidationMessage(string key)
+    {
+        if (validationMessages.TryGetValue(key, out string message))
+        {
+            return message;
+        }
+        return "";
+    }
+}
