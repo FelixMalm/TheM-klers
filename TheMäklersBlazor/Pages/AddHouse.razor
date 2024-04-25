@@ -1,4 +1,4 @@
-﻿@page "/AddHouse"
+@page "/AddHouse"
 @using System.Net.Http
 @using System.ComponentModel.DataAnnotations
 @using System.Text.RegularExpressions
@@ -174,7 +174,6 @@
                 validationMessages = validationResults.ToDictionary(vr => vr.MemberNames.FirstOrDefault() ?? "", vr => vr.ErrorMessage);
                 return;
             }
-
             var imagePaths = await SaveImagesAndGetPathsAsync(newHousing.Images);
 
             newHousing.Images = imagePaths; 
@@ -282,6 +281,7 @@
         await input.CopyToAsync(ms);
         return ms.ToArray();
     }
+
 
     private string GetValidationMessage(string key)
     {
