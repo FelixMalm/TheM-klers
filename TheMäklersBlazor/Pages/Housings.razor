@@ -43,9 +43,9 @@ else
                 <a href="HousingDetails/@housing.id.ToString()">
                     <div class="card-container">
                         <div class="image-container">
-                            @if (housing.images.Any())
+                            @if (housing.Images.Any())
                             {
-                                <img src="@housing.images.First()" alt="Housing Image" />
+                                <img src="@housing.Images.First()" alt="Housing Image" />
                             }
                             else
                             {

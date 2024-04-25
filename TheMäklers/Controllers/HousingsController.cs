@@ -16,7 +16,7 @@ namespace TheMäklersAPI.Controllers
         public HousingsController(IHousing housingRepository, IBroker BrokerRepo)
         {
             housingRepo = housingRepository;
-            brokerRepo = brokerRepo;
+            brokerRepo = BrokerRepo;
         }
 
         [HttpGet]
@@ -62,6 +62,10 @@ namespace TheMäklersAPI.Controllers
                     CategoryId = housingDto.CategoryId,
                     MunicipalityId = housingDto.MunicipalityId
                 };
+
+                housing.Images = housingDto.Images;
+
+                Console.WriteLine($"Images received: {string.Join(", ", housingDto.Images)}");
 
                 if (housingDto.BrokerId.HasValue)
                 {
@@ -159,5 +163,6 @@ namespace TheMäklersAPI.Controllers
         public int CategoryId { get; set; }
         public int? BrokerId { get; set; }
         public int MunicipalityId { get; set; }
+        public List<string> Images { get; set; }
     }
 }

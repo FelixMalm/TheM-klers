@@ -19,7 +19,7 @@
         public int monthlyFee { get; set; }
         public int annualOperatingCost { get; set; }
         public int yearBuilt { get; set; }
-        public string[] images { get; set; }
+        public List<string> Images { get; set; }
         public int categoryId { get; set; }
         public int brokerId { get; set; }
         public int municipalityId { get; set; }

@@ -1,7 +1,9 @@
-﻿@page "/AddHouse"
+@page "/AddHouse"
 @using System.Net.Http
 @using System.ComponentModel.DataAnnotations
+@using System.Text.RegularExpressions
 @inject HttpClient Http
+@inject ILocalFileStorageService _LocalFileStorageService
 
 <h3>Add Housing</h3>
 
@@ -106,18 +108,32 @@
     <span class="text-danger">@GetValidationMessage("categoryId")</span>
 </div>
 
+<div>
+    <InputFile multiple OnChange="@OnChange" />
+</div>
+
+<div class="image-container">
+    @foreach (var imageSource in imageSources)
+    {
+        <img src="@imageSource" />
+    }
+</div>
+
 <div class="form-group">
     <button class="btn btn-primary" @onclick="SaveHousing">Add Housing</button>
 </div>
 
 @code {
-    private Housing newHousing = new Housing();
+    private Housing newHousing = new Housing { Images = new List<string>() };
     private Dictionary<string, string> validationMessages = new Dictionary<string, string>();
     private bool isError = false;
     private string errorMessage = "";
     private List<Broker> brokers = new List<Broker>();
     private List<Municipality> municipalities = new List<Municipality>();
     private List<Category> categories = new List<Category>();
+
+    private const int maxAllowedSize = 2 * 1024 * 1024; // 2 MB
+    private List<string> imageSources = new List<string>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -158,12 +174,15 @@
                 validationMessages = validationResults.ToDictionary(vr => vr.MemberNames.FirstOrDefault() ?? "", vr => vr.ErrorMessage);
                 return;
             }
+            var imagePaths = await SaveImagesAndGetPathsAsync(newHousing.Images);
 
-            var response = await Http.PostAsJsonAsync("/api/Housings", newHousing); // Change the URL here
+            newHousing.Images = imagePaths; 
+
+            var response = await Http.PostAsJsonAsync("api/Housings", newHousing);
 
             if (response.IsSuccessStatusCode)
             {
-                newHousing = new Housing();
+                newHousing = new Housing { Images = new List<string>() }; 
                 validationMessages.Clear();
                 isError = false;
                 errorMessage = "Housing added successfully!";
@@ -177,8 +196,90 @@
         catch (Exception ex)
         {
             isError = true;
-            errorMessage = "An error occurred while adding housing. Please try again later.";
+            errorMessage = $"An error occurred while adding housing: {ex.Message}";
+            Console.WriteLine($"Error: {ex.Message}"); 
         }
+    }
+
+    private async Task<List<string>> SaveImagesAndGetPathsAsync(List<string> images)
+    {
+        var imagePaths = new List<string>();
+        foreach (var image in images)
+        {
+            if (IsBase64String(image))
+            {
+                try
+                {
+                    var imageData = Convert.FromBase64String(image);
+                    using var memoryStream = new MemoryStream(imageData);
+                    var imagePath = await _LocalFileStorageService.SaveFileAsync(memoryStream, Guid.NewGuid().ToString() + ".jpg");
+                    imagePaths.Add(imagePath);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error saving image: {ex.Message}");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Invalid Base64 string: {image}");
+            }
+        }
+        return imagePaths;
+    }
+
+    public bool IsBase64String(string s)
+    {
+        s = s.Trim();
+        return (s.Length % 4 == 0) && Regex.IsMatch(s, @"^[a-zA-Z0-9\+/]*={0,3}$", RegexOptions.None);
+    }
+
+    public interface ILocalFileStorageService
+    {
+        Task<string> SaveFileAsync(Stream fileStream, string fileName);
+    }
+
+    public class LocalFileStorageService : ILocalFileStorageService
+    {
+        private readonly string _uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+
+        public async Task<string> SaveFileAsync(Stream fileStream, string fileName)
+        {
+            if (!Directory.Exists(_uploadPath))
+            {
+                Directory.CreateDirectory(_uploadPath);
+            }
+
+            var filePath = Path.Combine(_uploadPath, fileName);
+
+            using var fileStreamOut = new FileStream(filePath, FileMode.Create);
+            await fileStream.CopyToAsync(fileStreamOut);
+
+            return filePath;
+        }
+    }
+
+    async Task OnChange(InputFileChangeEventArgs e)
+    {
+        foreach (var file in e.GetMultipleFiles())
+        {
+            using var stream = file.OpenReadStream(maxAllowedSize);
+            var imageBytes = await ReadFully(stream);
+            var base64String = Convert.ToBase64String(imageBytes);
+
+            newHousing.Images.Add(base64String);
+            imageSources.Add($"data:image/jpeg;base64,{base64String}");
+        }
+
+        Console.WriteLine($"Images count: {newHousing.Images.Count}");
+    }
+
+
+    async Task<byte[]> ReadFully(Stream input)
+    {
+        using var ms = new MemoryStream();
+        await input.CopyToAsync(ms);
+        return ms.ToArray();
     }
 
 
