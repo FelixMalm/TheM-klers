@@ -3,8 +3,21 @@
 @using System.Text.Json
 @using TheMäklersBlazor.Models
 @inject HttpClient httpClient
-
+@inject NavigationManager navigationManager
 <!-- Author Kim Jonsson -->
+<style>
+    .section {
+        margin-bottom: 20px;
+    }
+
+    .housing-image {
+        max-width: 100%;
+        height: auto;
+        margin-bottom: 5rem;
+    }
+</style>
+
+
 @if (broker == null)
 {
     <p>Loading...</p>
@@ -32,11 +45,33 @@ else
                 <p>No image available</p>
             }
         </div>
+        <div class="section">
+            <h4>Associated Housing</h4>
+            @if (associatedHousing != null)
+            {
+                <p>Address: @associatedHousing.address</p>
+                @if (associatedHousing.images != null && associatedHousing.images.Length > 0)
+                {
+                    <a href="@($"HousingDetails/{associatedHousing.id}")">
+                        <img src="@associatedHousing.images[0]" alt="Housing Image" class="housing-image" />
+                    </a>
+                }
+                else
+                {
+                    <p>No image available</p>
+                }
+            }
+            else
+            {
+                <p>No associated housing found</p>
+            }
+        </div>
     </div>
 }
 
 @code {
     private Broker broker;
+    private Housing associatedHousing;
 
     [Parameter]
     public string BrokerId { get; set; }
@@ -47,7 +82,14 @@ else
         {
             try
             {
+                
                 broker = await httpClient.GetFromJsonAsync<Broker>($"https://localhost:7078/api/Broker/{id}");
+
+                
+                var housings = await httpClient.GetFromJsonAsync<Housing[]>("https://localhost:7078/api/Housings");
+
+                
+                associatedHousing = housings.FirstOrDefault(h => h.brokerId == id);
             }
             catch (Exception ex)
             {

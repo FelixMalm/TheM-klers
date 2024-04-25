@@ -37,6 +37,7 @@
         public string phoneNumber { get; set; }
         public string imageUrl { get; set; }
         public Agency agency { get; set; }
+        
     }
 
     public class Agency

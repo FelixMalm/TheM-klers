@@ -18,13 +18,14 @@ else
     {
         <div class="broker-list">
             <div class="broker-image">
-                <a href="@broker.imageUrl" target="_blank">
+                <a href="@($"BrokerDetails/{broker.id}")">
                     <img src="@broker.imageUrl" alt="Broker Image" width="50" height="50" />
                 </a>
             </div>
+
             <div class="broker-details">
-                <div><strong>First Name:</strong> @broker.firstName</div>
-                <div><strong>Last Name:</strong> @broker.lastName</div>
+                <div><strong>Name:</strong> @broker.firstName @broker.lastName</div>
+                
                 <div><strong>Agency:</strong> <a href="@($"AgencyDetails/{broker.agency.id}")">@broker.agency.name</a></div>
             </div>
         </div>

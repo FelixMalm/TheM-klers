@@ -19,5 +19,5 @@ function nextSlide() {
     showSlide(++slideIndex);
 }
 
-// Show the first slide initially
+
 showSlide(slideIndex);

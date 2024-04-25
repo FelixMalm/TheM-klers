@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using TheMäklersAPI.Data.Interfaces;
 using TheMäklersAPI.Data.Models;
 
+
 namespace TheMäklersAPI.Controllers
 {
     [Route("api/[controller]")]
