@@ -50,10 +50,10 @@ else
             @if (associatedHousing != null)
             {
                 <p>Address: @associatedHousing.address</p>
-                @if (associatedHousing.images != null && associatedHousing.images.Length > 0)
+                @if (associatedHousing.Images != null && associatedHousing.Images.Count > 0)
                 {
                     <a href="@($"HousingDetails/{associatedHousing.id}")">
-                        <img src="@associatedHousing.images[0]" alt="Housing Image" class="housing-image" />
+                        <img src="@associatedHousing.Images[0]" alt="Housing Image" class="housing-image" />
                     </a>
                 }
                 else
