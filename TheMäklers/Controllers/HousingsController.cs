@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using TheMäklersAPI.Data.Interfaces;
 using TheMäklersAPI.Data.Models;
 
+
 namespace TheMäklersAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -15,7 +16,7 @@ namespace TheMäklersAPI.Controllers
         public HousingsController(IHousing housingRepository, IBroker BrokerRepo)
         {
             housingRepo = housingRepository;
-            brokerRepo = brokerRepo;
+            brokerRepo = BrokerRepo;
         }
 
         [HttpGet]
@@ -62,6 +63,10 @@ namespace TheMäklersAPI.Controllers
                     MunicipalityId = housingDto.MunicipalityId
                 };
 
+                housing.Images = housingDto.Images;
+
+                Console.WriteLine($"Images received: {string.Join(", ", housingDto.Images)}");
+
                 if (housingDto.BrokerId.HasValue)
                 {
                     var broker = await brokerRepo.GetBrokerByIdAsync(housingDto.BrokerId.Value);
@@ -83,7 +88,7 @@ namespace TheMäklersAPI.Controllers
         }
 
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}")] //Author Felix
         public async Task<IActionResult> PutHousing(int id, [FromBody] HousingDto housingDto)
         {
             try
@@ -158,5 +163,6 @@ namespace TheMäklersAPI.Controllers
         public int CategoryId { get; set; }
         public int? BrokerId { get; set; }
         public int MunicipalityId { get; set; }
+        public List<string> Images { get; set; }
     }
 }

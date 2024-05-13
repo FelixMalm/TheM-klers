@@ -4,27 +4,28 @@ using TheMäklersAPI.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
-namespace TheMäklersAPI.Controllers //Author Felix
+namespace TheMäklersAPI.Controllers 
 {
     [Route("api/[controller]")]
     [ApiController]
     public class AgencyController : ControllerBase //Author Felix
     {
         private readonly IAgency AgencyRepo;
-        private readonly IBroker BrokerRepo; // Add BrokerRepo
+        private readonly IBroker BrokerRepo;
 
-        public AgencyController(IAgency AgencyRepository, IBroker BrokerRepository) // Update constructor
+        public AgencyController(IAgency AgencyRepository, IBroker BrokerRepository) 
         {
             AgencyRepo = AgencyRepository;
-            BrokerRepo = BrokerRepository; // Initialize BrokerRepo
+            BrokerRepo = BrokerRepository; 
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Agency>>> Get()
         {
-            var agencies = await AgencyRepo.GetAgencyAsync();
-            return Ok(agencies);
+            var agency = await AgencyRepo.GetAgencyAsync();
+            return Ok(agency);
         }
 
         [HttpGet("{id}")]
@@ -39,7 +40,7 @@ namespace TheMäklersAPI.Controllers //Author Felix
         }
 
         [HttpPost] //Author Felix
-        public async Task<ActionResult<Agency>> Post([FromBody] AgencyDto agencyDto) // Use AgencyDto
+        public async Task<ActionResult<Agency>> Post([FromBody] AgencyDto agencyDto) 
         {
             try
             {
@@ -115,7 +116,6 @@ namespace TheMäklersAPI.Controllers //Author Felix
             }
             catch (Exception ex)
             {
-                // Log the exception
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -137,6 +137,7 @@ namespace TheMäklersAPI.Controllers //Author Felix
 
     public class AgencyDto //Author Felix
     {
+        [Required]
         public string Name { get; set; }
         public string Presentation { get; set; }
         public string LogoUrl { get; set; }

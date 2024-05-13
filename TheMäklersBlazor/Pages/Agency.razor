@@ -1,72 +1,67 @@
-﻿@page "/agency"
+@page "/agency"
+@using System.Net.Http
+@using System.Text.Json
+@using VoddalmBlazor.Models
+@inject HttpClient httpClient
 
-@inject HttpClient Http
-@code {
-    private List<AgencyDto> agencies;
+<!-- Author Felix -->
 
-    protected override async Task OnInitializedAsync()
-    {
-        agencies = await Http.GetFromJsonAsync<List<AgencyDto>>("https://localhost:7078/api/Agency");
-    }
-
-    public class AgencyDto
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Presentation { get; set; }
-        public string LogoUrl { get; set; }
-        public List<BrokerDto> Brokers { get; set; }
-    }
-
-    public class BrokerDto
-    {
-        public int Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-        public string PhoneNumber { get; set; }
-        public string ImageUrl { get; set; }
-    }
-}
-
-<h3>Agencies</h3>
-
-@if (agencies != null)
+@if (agencyList == null)
 {
-    foreach (var agency in agencies)
-    {
-        <div>
-            <h4>@agency.Name</h4>
-            <p>@agency.Presentation</p>
-            <img src="@agency.LogoUrl" alt="@agency.Name" />
-
-            <h5>Brokers:</h5>
-            @if (agency.Brokers != null && agency.Brokers.Any())
-            {
-                <ul>
-                    @foreach (var broker in agency.Brokers)
-                    {
-                        <li>
-                            <strong>@broker.FirstName @broker.LastName</strong>
-                            <p>Email: @broker.Email</p>
-                            <p>Phone: @broker.PhoneNumber</p>
-                            @if (!string.IsNullOrEmpty(broker.ImageUrl))
-                            {
-                                <img src="@broker.ImageUrl" alt="@broker.FirstName @broker.LastName" />
-                            }
-                        </li>
-                    }
-                </ul>
-            }
-            else
-            {
-                <p>No brokers available for this agency.</p>
-            }
-        </div>
-        <hr />
-    }
+    <p>Loading...</p>
 }
 else
 {
-    <p>Loading...</p>
+    <div class="agency-list">
+        @foreach (var agency in agencyList)
+        {
+            <div class="agency-item">
+                <div class="card-container">
+                    <div class="image-container">
+                        @if (!string.IsNullOrEmpty(agency.logoUrl))
+                        {
+                            <img src="@agency.logoUrl" alt="Agency Logo" class="agency-logo" />
+                        }
+                        else
+                        {
+                            <img src="placeholder.jpg" alt="No Logo Available" />
+                        }
+                    </div>
+                    <div class="info-container">
+                        <ul>
+                            <li><strong>Company:</strong> @agency.name</li>
+                            <li><strong>Presentation:</strong> @agency.presentation</li>
+                            <li><strong>Brokers:</strong></li>
+                            <ul>
+                                @foreach (var broker in agency.brokers)
+                                {
+                                    <li>@broker.firstName @broker.lastName</li>
+                                }
+                            </ul>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+
+@code {
+    private Agency1[] agencyList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            agencyList = await httpClient.GetFromJsonAsync<Agency1[]>("https://localhost:7046/api/Agency");
+
+            //Console.WriteLine(JsonSerializer.Serialize(agencyList));
+        }
+        catch (Exception ex)
+        {
+            // Handle exception (e.g., log, display error message)
+            Console.WriteLine($"Error fetching brokers: {ex.Message}");
+        }
+    }
 }

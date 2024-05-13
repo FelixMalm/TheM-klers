@@ -1,0 +1,140 @@
+﻿@page "/housings"
+@using System.Net.Http
+@using System.Text.Json
+@using TheMäklersBlazor.Models
+@inject HttpClient httpClient
+
+<!-- Author Kim Jonsson -->
+
+<h1>Housings</h1>
+
+<div class="filters">
+    <input type="text" placeholder="Search" @bind="searchTerm" @oninput="FilterHousings" />
+
+
+
+    <select @bind="selectedMunicipality">
+        <option value="">All Municipalities</option>
+        @foreach (var municipality in municipalities)
+        {
+            <option value="@municipality">@municipality</option>
+        }
+    </select>
+
+    <select @bind="selectedCategory">
+        <option value="">All Categories</option>
+        @foreach (var category in categories)
+        {
+            <option value="@category">@category</option>
+        }
+    </select>
+</div>
+
+@if (housingList == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="housing-list">
+        @foreach (var housing in filteredHousings)
+        {
+            <div class="housing-item">
+                <a href="HousingDetails/@housing.id.ToString()">
+                    <div class="card-container">
+                        <div class="image-container">
+                            @if (housing.Images.Any())
+                            {
+                                <img src="@housing.Images.First()" alt="Housing Image" />
+                            }
+                            else
+                            {
+                                <img src="placeholder.jpg" alt="No Image Available" />
+                            }
+                        </div>
+                        <div class="info-container">
+                            <ul>
+                                <li><strong>Address:</strong> <span>@housing.address</span></li>
+                                <li><strong>Initial Price:</strong> <span>@housing.initialPrice</span></li>
+                                <li><strong>Living Area:</strong> <span>@housing.livingArea</span></li>
+                                <li><strong>Agency:</strong> <a href="AgencyDetails/@housing.broker.agency.id.ToString()">@housing.broker.agency.name</a></li>
+                                <li><strong>Broker:</strong> <a href="BrokerDetails/@housing.broker.id.ToString()">@housing.broker.firstName @housing.broker.lastName</a></li>
+                            </ul>
+                            @if (!string.IsNullOrEmpty(housing.broker.agency.logoUrl))
+                            {
+                                <img src="@housing.broker.agency.logoUrl" alt="Agency Logo" class="agency-logo" />
+                            }
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private Housing[] housingList;
+    private Broker[] brokerList;
+    private Agency[] agencyList;
+    private string searchTerm = "";
+    private string selectedMunicipality = "";
+    private string selectedCategory = "";
+    private string[] municipalities = { "Ale", "Alingsås", "Alvesta", "Aneby", "Arboga" };
+    private string[] categories = { "Apartment", "Villas", "New production", "Leisure house" };
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            housingList = await httpClient.GetFromJsonAsync<Housing[]>("https://localhost:7078/api/Housings");
+            brokerList = await httpClient.GetFromJsonAsync<Broker[]>("https://localhost:7078/api/Broker");
+            agencyList = await httpClient.GetFromJsonAsync<Agency[]>("https://localhost:7078/api/Agency");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching data: {ex.Message}");
+        }
+    }
+
+    private IEnumerable<Housing> filteredHousings
+    {
+        get
+        {
+            var filtered = housingList.AsEnumerable();
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                filtered = filtered.Where(h =>
+                    h.id.ToString().Contains(searchTerm) ||
+                    h.address.Contains(searchTerm) ||
+                    h.initialPrice.ToString().Contains(searchTerm) ||
+                    h.livingArea.ToString().Contains(searchTerm) ||
+                    h.broker.agency.name.Contains(searchTerm) ||
+                    h.broker.firstName.Contains(searchTerm) ||
+                    h.broker.lastName.Contains(searchTerm) ||
+                    h.municipality.name.Contains(searchTerm) ||
+                    h.category.name.Contains(searchTerm)
+                );
+            }
+
+            if (!string.IsNullOrEmpty(selectedMunicipality))
+            {
+                filtered = filtered.Where(h => h.municipality.name == selectedMunicipality);
+            }
+
+            if (!string.IsNullOrEmpty(selectedCategory))
+            {
+                filtered = filtered.Where(h => h.category.name == selectedCategory);
+            }
+
+            return filtered;
+        }
+    }
+
+    private void FilterHousings()
+    {
+        StateHasChanged();
+    }
+
+
+}

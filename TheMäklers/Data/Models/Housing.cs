@@ -22,7 +22,6 @@ namespace TheMäklersAPI.Data.Models
         public double AnnualOperatingCost { get; set; }
         public int YearBuilt { get; set; }
         public List<string> Images { get; set; } = new List<string>();
-
         public int CategoryId { get; set; }
         public int BrokerId { get; set; }
         public int MunicipalityId { get; set; }

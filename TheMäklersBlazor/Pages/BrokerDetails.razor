@@ -1,0 +1,100 @@
+﻿@page "/BrokerDetails/{BrokerId}"
+@using System.Net.Http
+@using System.Text.Json
+@using TheMäklersBlazor.Models
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+<!-- Author Kim Jonsson -->
+<style>
+    .section {
+        margin-bottom: 20px;
+    }
+
+    .housing-image {
+        max-width: 100%;
+        height: auto;
+        margin-bottom: 5rem;
+    }
+</style>
+
+
+@if (broker == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="broker-details">
+        <div class="section">
+            <h4>Broker Details</h4>
+            <ul>
+                <li><strong>Name:</strong> @broker.firstName @broker.lastName</li>
+                <li><strong>Email:</strong> @broker.email</li>
+                <li><strong>Phone Number:</strong> @broker.phoneNumber</li>
+                <li><strong>Agency:</strong> @broker.agency.name</li>
+            </ul>
+        </div>
+        <div class="section">
+            <h4>Image</h4>
+            @if (!string.IsNullOrEmpty(broker.imageUrl))
+            {
+                <img src="@broker.imageUrl" alt="Broker Image" />
+            }
+            else
+            {
+                <p>No image available</p>
+            }
+        </div>
+        <div class="section">
+            <h4>Associated Housing</h4>
+            @if (associatedHousing != null)
+            {
+                <p>Address: @associatedHousing.address</p>
+                @if (associatedHousing.Images != null && associatedHousing.Images.Count > 0)
+                {
+                    <a href="@($"HousingDetails/{associatedHousing.id}")">
+                        <img src="@associatedHousing.Images[0]" alt="Housing Image" class="housing-image" />
+                    </a>
+                }
+                else
+                {
+                    <p>No image available</p>
+                }
+            }
+            else
+            {
+                <p>No associated housing found</p>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    private Broker broker;
+    private Housing associatedHousing;
+
+    [Parameter]
+    public string BrokerId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrEmpty(BrokerId) && int.TryParse(BrokerId, out int id))
+        {
+            try
+            {
+                
+                broker = await httpClient.GetFromJsonAsync<Broker>($"https://localhost:7078/api/Broker/{id}");
+
+                
+                var housings = await httpClient.GetFromJsonAsync<Housing[]>("https://localhost:7078/api/Housings");
+
+                
+                associatedHousing = housings.FirstOrDefault(h => h.brokerId == id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching broker details: {ex.Message}");
+            }
+        }
+    }
+}

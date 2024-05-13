@@ -25,17 +25,6 @@ namespace TheMäklersAPI.Data.Repositories
             return agency;
         }
 
-        public async Task<Broker> GetBrokerByIdAsync(int id)
-        {
-            var broker = await _context.Broker.FindAsync(id);
-
-            if (broker != null)
-            {
-                await _context.Entry(broker).Reference(s => s.Agency).LoadAsync();
-            }
-
-            return broker;
-        }
         public async Task AddAgencyAsync(Agency agency)
         {
             _context.Agency.Add(agency);

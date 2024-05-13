@@ -1,0 +1,50 @@
+﻿@page "/brokers"
+@using System.Net.Http
+@using System.Text.Json
+@using TheMäklersBlazor.Models
+@inject HttpClient httpClient
+
+<!-- Author Kim Jonsson -->
+
+<h1>Brokers</h1>
+
+@if (brokerList == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    @foreach (var broker in brokerList)
+    {
+        <div class="broker-list">
+            <div class="broker-image">
+                <a href="@($"BrokerDetails/{broker.id}")">
+                    <img src="@broker.imageUrl" alt="Broker Image" width="50" height="50" />
+                </a>
+            </div>
+
+            <div class="broker-details">
+                <div><strong>Name:</strong> @broker.firstName @broker.lastName</div>
+                
+                <div><strong>Agency:</strong> <a href="@($"AgencyDetails/{broker.agency.id}")">@broker.agency.name</a></div>
+            </div>
+        </div>
+    }
+}
+
+@code {
+    private Broker[] brokerList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            brokerList = await httpClient.GetFromJsonAsync<Broker[]>("https://localhost:7078/api/Broker");
+        }
+        catch (Exception ex)
+        {
+            // Handle exception (e.g., log, display error message)
+            Console.WriteLine($"Error fetching brokers: {ex.Message}");
+        }
+    }
+}

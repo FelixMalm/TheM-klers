@@ -31,7 +31,6 @@ namespace TheMäklersAPI.Data.Repositories
             return broker;
         }
 
-
         public async Task AddBrokerAsync(Broker broker)
         {
             _context.Broker.Add(broker);
