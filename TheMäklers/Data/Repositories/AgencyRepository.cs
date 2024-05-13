@@ -19,7 +19,7 @@ namespace TheMäklersAPI.Data.Repositories
         public async Task<Agency> GetAgencyByIdAsync(int id)
         {
             var agency = await _context.Agency
-                .Include(a => a.Brokers) 
+                .Include(a => a.Brokers) // Use Include to load the Brokers collection
                 .FirstOrDefaultAsync(a => a.Id == id);
 
             return agency;
